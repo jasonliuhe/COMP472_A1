@@ -56,7 +56,8 @@ def main():
         y = sizeofC - (np.math.ceil((y_end - Decimal(crime_loc[1])) / size_of_each_coordinates))
         crime_region[x][y] += 1
 
-    print(crime_region)
+    # print(crime_region)
+
     # get crimeNumberSorted
     crimeNumberSorted = np.sort(crime_region, axis=None)
 
@@ -81,7 +82,6 @@ def main():
                 ax.broken_barh([(x_ticks[x], size_of_each_coordinates)], (y_ticks[y], size_of_each_coordinates))
             else:
                 crime_region[x][y] = 0
-    print(crime_region.shape)
     # draw path line
     path_x = []
     path_y = []
