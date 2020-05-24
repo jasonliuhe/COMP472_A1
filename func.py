@@ -1,10 +1,5 @@
 import copy
-import sys
-
 import numpy as np
-import shapefile
-import matplotlib.pyplot as plt
-import time
 from decimal import Decimal
 import timeout_decorator
 
@@ -37,7 +32,7 @@ def check_point_at_edge(next_point, x_start, x_end, y_start, y_end):
         return False
 
 
-def removearray(L, arr):
+def remove_array(L, arr):
     ind = 0
     size = len(L)
     while ind != size and not np.array_equal(L[ind], arr):
@@ -71,8 +66,11 @@ def check_shortest_path(__shortest_path, current_point, previous_point):
 
     # not find point in shortest_path list
     if not find_exist:
-        shortest_path = np.append(shortest_path, [[current_point[0], current_point[1], previous_point[0], previous_point[1], previous_point_distance + new_cost]], axis=0)
+        shortest_path = np.append(shortest_path, [
+            [current_point[0], current_point[1], previous_point[0], previous_point[1],
+             previous_point_distance + new_cost]], axis=0)
     return shortest_path
+
 
 # move point function
 # return point(x, y, distance to end point + cost from start point, new_cost) or if invalid return False
@@ -270,7 +268,8 @@ def find_path(x_start, x_end, y_start, y_end, start_point, end_point, size_of_ea
 
     # shortest path of every checked point list (current_x, current_y, previous_x, previous_y, cost_from_start_point)
     shortest_path = np.empty((0, 5), dtype=Decimal)
-    shortest_path = np.append(shortest_path, [[start_point[0], start_point[1], start_point[0], start_point[1], Decimal(0)]], axis=0)
+    shortest_path = np.append(shortest_path,
+                              [[start_point[0], start_point[1], start_point[0], start_point[1], Decimal(0)]], axis=0)
 
     if start_point == end_point:
         return path_coordinates
@@ -298,7 +297,6 @@ def find_path(x_start, x_end, y_start, y_end, start_point, end_point, size_of_ea
         # move start point to close_list from open_list
         close_list = np.append(close_list, [open_list[0]], axis=0)
         # path_coordinates = np.append(path_coordinates, [open_list[0]], axis=0)
-
 
         # check all the points whether already in the open_list or close_list
         if type(__up) != bool:
@@ -462,39 +460,4 @@ def find_path(x_start, x_end, y_start, y_end, start_point, end_point, size_of_ea
     print("Cannot find path.")
     return path_coordinates
 
-# def main():
-#     start_time = time.time()
-#     x_start = Decimal('-73.59')
-#     x_end = Decimal('-73.55')
-#     y_start = Decimal('45.49')
-#     y_end = Decimal('45.53')
-#
-#     start_point = [Decimal('-73.586'), Decimal('45.494')]
-#     end_point = [Decimal('-73.588'), Decimal('45.496')]
-#     crime_region = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-#                             , [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=Decimal)
-#     size_of_each_coordinates = Decimal('0.002')
-#     # print(up(start_point,size_of_each_coordinates, x_start, x_end, y_start, y_end, crime_region))
-#     find_path(x_start, x_end, y_start, y_end, start_point, end_point, size_of_each_coordinates, crime_region)
-#     print("--- %s seconds ---" % (time.time() - start_time))
-#
-#
-# main()
+

@@ -1,5 +1,3 @@
-import sys
-
 import numpy as np
 import shapefile
 import matplotlib.pyplot as plt
@@ -10,6 +8,7 @@ import func
 
 
 def main():
+
     # start timer
     start_time = time.time()
 
@@ -21,10 +20,9 @@ def main():
     crimePoint = np.empty(shape=(0, 2), dtype=Decimal)
     for shapeR in shapeRecords:
         crimePoint = np.append(crimePoint, shapeR.shape.points, axis=0)
-        # print(shapeR.shape.points)
 
-    # GUI dis play maps
-    # variable start_point
+
+    # variables
     start_point = [Decimal('-73.562'), Decimal('45.49')]
     end_point = [Decimal('-73.557'), Decimal('45.526')]
     size_of_each_coordinates = Decimal('0.002')
@@ -36,6 +34,7 @@ def main():
 
     threshold_of_crime = Decimal('0.17')
 
+    # GUI display maps
     # set x and y and grid
     fig, ax = plt.subplots(figsize=(20, 20))
     x_ticks = np.arange(x_start, x_end + Decimal('0.001'), size_of_each_coordinates)
@@ -82,18 +81,14 @@ def main():
                 ax.broken_barh([(x_ticks[x], size_of_each_coordinates)], (y_ticks[y], size_of_each_coordinates))
             else:
                 crime_region[x][y] = 0
-    # draw path line
-    path_x = []
-    path_y = []
 
     # move point to intersection point
     func.move_point_to_intersection_point(x_start, y_start, start_point, end_point, size_of_each_coordinates)
 
     try:
         shortest_path = func.find_path(x_start, x_end, y_start, y_end, start_point, end_point, size_of_each_coordinates, crime_region)
-        print(shortest_path.shape)
         dp = end_point
-        while True:
+        while len(shortest_path) != 0:
             if dp[0] == start_point[0] and dp[1] == start_point[1]:
                 break
             for i in range(len(shortest_path)):
@@ -103,25 +98,10 @@ def main():
                     dp[1] = shortest_path[i][3]
                     break
 
-        # for i in range(path_coordinates.shape[0]):
-        #     if i < path_coordinates.shape[0]-1:
-        #         for x in range(len(crime_region)):
-        #             for y in range(len(crime_region[x])):
-        #                 ax.text(x_ticks[x] + size_of_each_coordinates / Decimal('2.5'),
-        #                         y_ticks[y] + size_of_each_coordinates / Decimal('2.2'), crime_region[x][y])
-        #                 if crime_region[x][y] > thresholdOfNumOfCrime:
-        #                     ax.broken_barh([(x_ticks[x], size_of_each_coordinates)],
-        #                                    (y_ticks[y], size_of_each_coordinates))
-        #
-        #         plt.plot([path_coordinates[i][0], path_coordinates[i+1][0]], [path_coordinates[i][1], path_coordinates[i+1][1]], 'r--')
-        plt.show()
+
     except timeout_decorator.TimeoutError:
         print('Cannot find path.')
-
-
-    # plt.plot(path_x, path_y, 'r--')
-
-
+    plt.show()
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
